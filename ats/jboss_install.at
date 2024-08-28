@@ -1,0 +1,15 @@
+runLitpScript cluster_common.atlib
+
+
+# Create the cmw-clustered-service
+litp create -t clustered-service     -p /deployments/test/clusters/cluster1/services/fmmed_cs -o name=csvc1 active=2 standby=0 node_list="node_1,node_2"
+
+# Create the jboss-container specifying the service_name and the install_source
+litp create -t jboss-container -p /software/services/FMMed -o service_name=fmmed install_source=/opt/ericsson/nms/jboss/jboss-eap-ericsson-6.1.1.tgz
+ 
+# Inherit the jboss container into the applications on the FMMed service
+litp inherit -p /deployments/test/clusters/cluster1/services/fmmed_cs/applications/FMMed -s /software/services/FMMed
+
+litp create_plan
+show show_plan
+litp run_plan
